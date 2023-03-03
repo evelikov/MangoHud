@@ -33,10 +33,6 @@
 namespace fs = ghc::filesystem;
 using namespace std;
 
-#ifdef HAVE_DBUS
-float g_overflow = 50.f /* 3333ms * 0.5 / 16.6667 / 2 (to edge and back) */;
-#endif
-
 string gpuString,wineVersion,wineProcess;
 uint32_t deviceID;
 bool gui_open = false;
@@ -413,6 +409,8 @@ float get_ticker_limited_pos(float pos, float tw, float& left_limit, float& righ
 #ifdef HAVE_DBUS
 void render_mpris_metadata(const struct overlay_params& params, mutexed_metadata& meta, uint64_t frame_timing)
 {
+   static float g_overflow = 50.f /* 3333ms * 0.5 / 16.6667 / 2 (to edge and back) */;
+
    if (meta.meta.valid) {
       auto color = ImGui::ColorConvertU32ToFloat4(params.media_player_color);
       ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8,0));
