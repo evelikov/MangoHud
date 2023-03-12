@@ -2,7 +2,7 @@
 #include "windows.h"
 #include <dxgi.h>
 #include <cstdio>
-#include "dxgi.h"
+#include "d3d_shared.h"
 
 #ifdef _UNICODE
 # define KIERO_TEXT(text) L##text
@@ -18,7 +18,7 @@ uint32_t get_device_id_dxgi(){
     }
     auto CreateDXGIFactory = reinterpret_cast<decltype(&::CreateDXGIFactory)>(::GetProcAddress(libDXGI, "CreateDXGIFactory"));
     if (!CreateDXGIFactory)
-    {   
+    {
         printf("can't create dxgi factory\n");
         return 0;
     }
