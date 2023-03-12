@@ -96,81 +96,83 @@ static VkResult overlay_CreateInstance(
     VkInstance*                                 pInstance)
 {
     fprintf(stderr, "MANGOAPP LAYER: Init\n");
-    VkLayerInstanceCreateInfo *chain_info =
-        get_instance_chain_info(pCreateInfo, VK_LAYER_LINK_INFO);
-    std::string engineVersion,engineName;
-    enum EngineTypes engine = EngineTypes::UNKNOWN;
+   VkLayerInstanceCreateInfo *chain_info =
+      get_instance_chain_info(pCreateInfo, VK_LAYER_LINK_INFO);
 
-    const char* pEngineName = nullptr;
-    if (pCreateInfo->pApplicationInfo)
-        pEngineName = pCreateInfo->pApplicationInfo->pEngineName;
-    if (pEngineName)
-        engineName = pEngineName;
-    if (engineName == "DXVK" || engineName == "vkd3d") {
-        int engineVer = pCreateInfo->pApplicationInfo->engineVersion;
-        engineVersion = to_string(VK_VERSION_MAJOR(engineVer)) + "." + to_string(VK_VERSION_MINOR(engineVer)) + "." + to_string(VK_VERSION_PATCH(engineVer));
-    }
+   std::string engineVersion,engineName;
+   enum EngineTypes engine = EngineTypes::UNKNOWN;
 
-    if (engineName == "DXVK")
-        engine = DXVK;
+   const char* pEngineName = nullptr;
+   if (pCreateInfo->pApplicationInfo)
+       pEngineName = pCreateInfo->pApplicationInfo->pEngineName;
+   if (pEngineName)
+       engineName = pEngineName;
+   if (engineName == "DXVK" || engineName == "vkd3d") {
+       int engineVer = pCreateInfo->pApplicationInfo->engineVersion;
+       engineVersion = to_string(VK_VERSION_MAJOR(engineVer)) + "." + to_string(VK_VERSION_MINOR(engineVer)) + "." + to_string(VK_VERSION_PATCH(engineVer));
+   }
 
-    else if (engineName == "vkd3d")
-        engine = VKD3D;
+   if (engineName == "DXVK")
+       engine = DXVK;
 
-    else if(engineName == "mesa zink")
-        engine = ZINK;
+   else if (engineName == "vkd3d")
+       engine = VKD3D;
 
-    else if (engineName == "Damavand")
-        engine = DAMAVAND;
+   else if(engineName == "mesa zink")
+       engine = ZINK;
 
-    else if (engineName == "Feral3D")
-        engine = FERAL3D;
+   else if (engineName == "Damavand")
+       engine = DAMAVAND;
 
-    else
-        engine = VULKAN;
+   else if (engineName == "Feral3D")
+       engine = FERAL3D;
 
-    assert(chain_info->u.pLayerInfo);
-    PFN_vkGetInstanceProcAddr fpGetInstanceProcAddr =
-        chain_info->u.pLayerInfo->pfnNextGetInstanceProcAddr;
-    PFN_vkCreateInstance fpCreateInstance =
-        (PFN_vkCreateInstance)fpGetInstanceProcAddr(NULL, "vkCreateInstance");
-    if (fpCreateInstance == NULL) {
-        return VK_ERROR_INITIALIZATION_FAILED;
-    }
+   else
+       engine = VULKAN;
 
-    // Advance the link info for the next element on the chain
-    chain_info->u.pLayerInfo = chain_info->u.pLayerInfo->pNext;
+   assert(chain_info->u.pLayerInfo);
+   PFN_vkGetInstanceProcAddr fpGetInstanceProcAddr =
+      chain_info->u.pLayerInfo->pfnNextGetInstanceProcAddr;
+   PFN_vkCreateInstance fpCreateInstance =
+      (PFN_vkCreateInstance)fpGetInstanceProcAddr(NULL, "vkCreateInstance");
+   if (fpCreateInstance == NULL) {
+      return VK_ERROR_INITIALIZATION_FAILED;
+   }
 
-    VkResult result = fpCreateInstance(pCreateInfo, pAllocator, pInstance);
-    if (result != VK_SUCCESS) return result;
+   // Advance the link info for the next element on the chain
+   chain_info->u.pLayerInfo = chain_info->u.pLayerInfo->pNext;
 
-    struct instance_data *instance_data = new_instance_data(*pInstance);
-    vk_load_instance_commands(instance_data->instance,
-                                fpGetInstanceProcAddr,
-                                &instance_data->vtable);
-    instance_data_map_physical_devices(instance_data, true);
 
-    instance_data->engine = engine;
-    instance_data->engineName = engineName;
-    instance_data->engineVersion = engineVersion;
+   VkResult result = fpCreateInstance(pCreateInfo, pAllocator, pInstance);
+   if (result != VK_SUCCESS) return result;
 
-    struct stat info;
-    string path = "/tmp/mangoapp/";
-    string command = "mkdir -p " + path;
-    string json_path = path + to_string(getpid()) + ".json";
-    if( stat(path.c_str(), &info ) != 0 )
-        system(command.c_str());
-    json j;
-    j["engine"] = engine;
-    ofstream o(json_path);
-    if (!o.fail()){
-        o << std::setw(4) << j << std::endl;
-    } else{
-        fprintf(stderr, "MANGOAPP LAYER: failed to write json\n");
-    }
-    o.close();
+   struct instance_data *instance_data = new_instance_data(*pInstance);
+   vk_load_instance_commands(instance_data->instance,
+                             fpGetInstanceProcAddr,
+                             &instance_data->vtable);
+   instance_data_map_physical_devices(instance_data, true);
 
-    return result;
+   instance_data->engine = engine;
+   instance_data->engineName = engineName;
+   instance_data->engineVersion = engineVersion;
+
+   struct stat info;
+   string path = "/tmp/mangoapp/";
+   string command = "mkdir -p " + path;
+   string json_path = path + to_string(getpid()) + ".json";
+   if (stat(path.c_str(), &info ) != 0 )
+       system(command.c_str());
+   json j;
+   j["engine"] = engine;
+   ofstream o(json_path);
+   if (!o.fail()){
+       o << std::setw(4) << j << std::endl;
+   } else{
+       fprintf(stderr, "MANGOAPP LAYER: failed to write json\n");
+   }
+   o.close();
+
+   return result;
 }
 
 extern "C" VK_LAYER_EXPORT VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL overlay_GetInstanceProcAddr(VkInstance instance,
