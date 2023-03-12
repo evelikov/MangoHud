@@ -13,17 +13,14 @@ typedef int (*NvAPI_Initialize_t)();
 typedef int (*NvAPI_EnumPhysicalGPUs_t)(int **handles, int *count);
 typedef int (*NvAPI_GPU_GetUsages_t)(int *handle, unsigned int *usages);
 
-NvAPI_QueryInterface_t      NvAPI_QueryInterface     = NULL;
-NvAPI_Initialize_t          NvAPI_Initialize         = NULL;
-NvAPI_EnumPhysicalGPUs_t    NvAPI_EnumPhysicalGPUs   = NULL;
-NvAPI_GPU_GetUsages_t       NvAPI_GPU_GetUsages      = NULL;
-HMODULE hmod;
-bool init_nvapi_bool;
-int         *gpuHandles[NVAPI_MAX_PHYSICAL_GPUS] = { NULL };
-int          gpuCount = 0;
-unsigned int gpuUsages[NVAPI_MAX_USAGES_PER_GPU] = { 0 };
+static NvAPI_QueryInterface_t      NvAPI_QueryInterface     = NULL;
+static NvAPI_Initialize_t          NvAPI_Initialize         = NULL;
+static NvAPI_EnumPhysicalGPUs_t    NvAPI_EnumPhysicalGPUs   = NULL;
+static NvAPI_GPU_GetUsages_t       NvAPI_GPU_GetUsages      = NULL;
+static HMODULE hmod;
+static bool init_nvapi_bool;
 
-bool checkNVAPI(){
+bool checkNVAPI() {
 
 #if _WIN64
     hmod = LoadLibraryA("nvapi64.dll");
@@ -47,18 +44,20 @@ bool checkNVAPI(){
         return 2;
     }
     (*NvAPI_Initialize)();
-    
-    int         *gpuHandles[NVAPI_MAX_PHYSICAL_GPUS] = { NULL };
 
     return true;
 }
 
 void nvapi_util()
-{  
+{
+    int         *gpuHandles[NVAPI_MAX_PHYSICAL_GPUS] = { NULL };
+    int          gpuCount = 0;
+    unsigned int gpuUsages[NVAPI_MAX_USAGES_PER_GPU] = { 0 };
+
     if (!init_nvapi_bool){
         init_nvapi_bool = checkNVAPI();
     }
-    
+
     gpuUsages[0] = (NVAPI_MAX_USAGES_PER_GPU * 4) | 0x10000;
     (*NvAPI_EnumPhysicalGPUs)(gpuHandles, &gpuCount);
     (*NvAPI_GPU_GetUsages)(gpuHandles[0], gpuUsages);
