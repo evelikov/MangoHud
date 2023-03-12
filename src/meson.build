@@ -30,8 +30,8 @@ endif
 
 if ['windows', 'mingw'].contains(host_machine.system())
   overlay_spv = files(
-    'overlay.frag.srv.h',
-    'overlay.vert.srv.h',
+    'overlay.frag.spv.h',
+    'overlay.vert.spv.h',
   )
 else
   glslang = find_program('glslangValidator')
