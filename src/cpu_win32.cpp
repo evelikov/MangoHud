@@ -18,15 +18,13 @@ bool CPUStats::UpdateCPUData()
 {
     #define NUMBER_OF_PROCESSORS (8)
     #define PROCESSOR_BUFFER_SIZE (NUMBER_OF_PROCESSORS * 8)
-    static ULONG64 ProcessorIdleTimeBuffer [ PROCESSOR_BUFFER_SIZE ];
 
     FILETIME IdleTime, KernelTime, UserTime;
     static unsigned long long PrevTotal = 0;
     static unsigned long long PrevIdle = 0;
-    static unsigned long long PrevUser = 0;
     unsigned long long ThisTotal;
     unsigned long long ThisIdle, ThisKernel, ThisUser;
-    unsigned long long TotalSinceLast, IdleSinceLast, UserSinceLast;
+    unsigned long long TotalSinceLast, IdleSinceLast;
 
 
     // GET THE KERNEL / USER / IDLE times.
@@ -40,7 +38,6 @@ bool CPUStats::UpdateCPUData()
     ThisTotal = ThisKernel + ThisUser;
     TotalSinceLast = ThisTotal - PrevTotal;
     IdleSinceLast = ThisIdle - PrevIdle;
-    UserSinceLast = ThisUser - PrevUser;
     double Headroom;
     Headroom =  (double)IdleSinceLast / (double)TotalSinceLast ;
     double Load;
@@ -50,7 +47,6 @@ bool CPUStats::UpdateCPUData()
 
     PrevTotal = ThisTotal;
     PrevIdle = ThisIdle;
-    PrevUser = ThisUser;
 
     // print results to output window of VS when run in Debug
     m_cpuDataTotal.percent = Load;

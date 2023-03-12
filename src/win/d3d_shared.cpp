@@ -2,10 +2,9 @@
 #include "overlay.h"
 
 static bool cfg_inited = false;
-ImVec2 window_size;
 overlay_params params {};
 struct swapchain_stats sw_stats {};
-static uint32_t vendorID;
+uint32_t vendorID;
 kiero::RenderType::Enum dx_version;
 
 void init_d3d_shared(){

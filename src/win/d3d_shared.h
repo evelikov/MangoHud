@@ -1,7 +1,6 @@
 #include "../overlay.h"
 #include "kiero.h"
 
-extern ImVec2 window_size;
 extern struct overlay_params params;
 extern struct swapchain_stats sw_stats;
 extern kiero::RenderType::Enum dx_version;
