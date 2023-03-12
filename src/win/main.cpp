@@ -53,7 +53,7 @@ static void renderTypes() {
         kiero::init(_type);
 }
 
-static int MainThread()
+static long unsigned __stdcall MainThread(void *foo)
 {
     ConsoleSetup();
     printf("MangoHud Attached!\n");
@@ -78,7 +78,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID)
     switch (fdwReason)
     {
     case DLL_PROCESS_ATTACH:
-        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MainThread, NULL, 0, NULL);
+        CreateThread(NULL, 0, MainThread, NULL, 0, NULL);
         break;
     }
 
