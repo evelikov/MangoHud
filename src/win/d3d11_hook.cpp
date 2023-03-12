@@ -3,6 +3,7 @@
 #if KIERO_INCLUDE_D3D11
 
 #include "d3d11_hook.h"
+#include <d3d11.h>
 #include <assert.h>
 #include <intrin.h>
 
@@ -11,7 +12,7 @@
 typedef long(__stdcall* Present)(IDXGISwapChain*, UINT, UINT);
 static Present oPresent = NULL;
 
-long __stdcall hkPresent11(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
+static long __stdcall hkPresent11(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
 {
     dx_version = kiero::RenderType::D3D11;
 #ifdef _MSC_VER

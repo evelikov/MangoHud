@@ -7,7 +7,7 @@
 #define SystemBasicInformation    0x0
 FILETIME last_userTime, last_kernelTime, last_idleTime;
 
-uint64_t FileTimeToInt64( const FILETIME& ft ) {
+static uint64_t FileTimeToInt64( const FILETIME& ft ) {
     ULARGE_INTEGER uli = { 0 };
     uli.LowPart = ft.dwLowDateTime;
     uli.HighPart = ft.dwHighDateTime;
@@ -29,7 +29,7 @@ bool CPUStats::UpdateCPUData()
     unsigned long long TotalSinceLast, IdleSinceLast, UserSinceLast;
 
 
-    // GET THE KERNEL / USER / IDLE times.  
+    // GET THE KERNEL / USER / IDLE times.
     // And oh, BTW, kernel time includes idle time
     GetSystemTimes( & IdleTime, & KernelTime, & UserTime);
 

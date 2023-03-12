@@ -1,7 +1,7 @@
 #include <cstdio>
+#include <windows.h>
 #include "kiero.h"
 #include <vector>
-#include "win_shared.h"
 #if KIERO_INCLUDE_D3D11
 # include "d3d11_hook.h"
 #endif
@@ -15,9 +15,9 @@
 # define KIERO_TEXT(text) text
 #endif
 
-std::vector<kiero::RenderType::Enum> render_types;
+static std::vector<kiero::RenderType::Enum> render_types;
 
-void ConsoleSetup()
+static void ConsoleSetup()
 {
 	// With this trick we'll be able to print content to the console, and if we have luck we could get information printed by the game.
 	AllocConsole();
@@ -27,7 +27,7 @@ void ConsoleSetup()
 	freopen("CONIN$", "r", stdin);
 }
 
-void renderTypes() {
+static void renderTypes() {
     render_types.clear();
     if (::GetModuleHandle(KIERO_TEXT("d3d9.dll")) != NULL)
     {
@@ -53,7 +53,7 @@ void renderTypes() {
         kiero::init(_type);
 }
 
-int MainThread()
+static int MainThread()
 {
     ConsoleSetup();
     printf("MangoHud Attached!\n");
@@ -66,9 +66,13 @@ int MainThread()
     return 0;
 }
 
+// XXX: Drop the declaration one day.
+// MSDN says the declaration is in Process.h, where the header is not enough for
+// WINE. Instead if has a local __WINESRC__ guarded one in winbase.h.
+BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID);
 BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID)
 {
-    
+
     DisableThreadLibraryCalls(hInstance);
 
     switch (fdwReason)
