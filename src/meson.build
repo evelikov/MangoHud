@@ -1,5 +1,3 @@
-glslang = find_program('glslangValidator')
-
 # Needs prefix for configure_file()
 if get_option('append_libdir_mangohud')
   libdir_mangohud = join_paths(get_option('libdir'), 'mangohud')
@@ -30,16 +28,25 @@ if get_option('prepend_libdir_vk')
   ld_libdir_mangohud_vk = ld_libdir_mangohud
 endif
 
-overlay_shaders = [
-  'overlay.frag',
-  'overlay.vert',
-]
-overlay_spv = []
-foreach s : ['overlay.frag', 'overlay.vert']
-  overlay_spv += custom_target(
-    s + '.spv.h', input : s, output : s + '.spv.h',
-    command : [glslang, '-V', '-x', '-o', '@OUTPUT@', '@INPUT@'])
-endforeach
+if ['windows', 'mingw'].contains(host_machine.system())
+  overlay_spv = files(
+    'overlay.frag.srv.h'
+    'overlay.vert.srv.h'
+  )
+else
+  glslang = find_program('glslangValidator')
+
+  overlay_shaders = [
+    'overlay.frag',
+    'overlay.vert',
+  ]
+  overlay_spv = []
+  foreach s : ['overlay.frag', 'overlay.vert']
+    overlay_spv += custom_target(
+      s + '.spv.h', input : s, output : s + '.spv.h',
+      command : [glslang, '-V', '-x', '-o', '@OUTPUT@', '@INPUT@'])
+  endforeach
+endif
 
 util_files = files(
   'mesa/util/os_socket.c',
