@@ -49,11 +49,14 @@ jobs:
           toolchain:p
           meson:p
           python-mako:p
+          spdlog:p
+          vulkan-headers:p
+          vulkan-icd-loader:p
     - name: 'Enter DevShell'
       run: '.github\workflows\EnterDevShell.ps1 ${{ inputs.architecture }}'
       shell: pwsh
     - name: 'Configure'
-      run: meson setup _build
+      run: meson setup _build -Duse_system_spdlog=enabled -Duse_system_vulkan=enabled
     - name: 'Build'
       run: meson compile -C _build
     - name: 'Install'
