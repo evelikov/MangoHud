@@ -20,6 +20,7 @@ void impl::d3d12::init()
 {
     printf("init d3d12\n");
     auto ret = kiero::bind(140, (void**)&oPresentD3D12, reinterpret_cast<void*>(hkPresent12));
+    (void)ret;
     assert(ret == kiero::Status::Success);
     init_d3d_shared();
 }

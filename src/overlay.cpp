@@ -681,6 +681,7 @@ void init_gpu_stats(uint32_t& vendorID, uint32_t reported_deviceID, overlay_para
                &pci.domain, &pci.bus,
                &pci.slot, &pci.func) == 4) {
          pci_bus_parsed = true;
+         (void)pci_bus_parsed;
          // reformat back to sysfs file name's and nvml's expected format
          // so config file param's value format doesn't have to be as strict
          std::stringstream ss;

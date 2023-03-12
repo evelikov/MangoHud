@@ -31,6 +31,7 @@ void impl::d3d11::init()
 {
     printf("init d3d11\n");
     auto ret = kiero::bind(8, (void**)&oPresent, reinterpret_cast<void *>(hkPresent11));
+    (void)ret;
     assert(ret == kiero::Status::Success);
     init_d3d_shared();
 }
