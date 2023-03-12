@@ -15,11 +15,6 @@
 using namespace std;
 using json = nlohmann::json;
 
-// single global lock, for simplicity
-std::mutex global_lock;
-typedef std::lock_guard<std::mutex> scoped_lock;
-std::unordered_map<uint64_t, void *> vk_object_to_data;
-
 /* Mapped from VkInstace/VkPhysicalDevice */
 struct instance_data {
    struct vk_instance_dispatch_table vtable;
@@ -27,6 +22,11 @@ struct instance_data {
    string engineName, engineVersion;
    enum EngineTypes engine;
 };
+
+// single global lock, for simplicity
+static std::mutex global_lock;
+typedef std::lock_guard<std::mutex> scoped_lock;
+static std::unordered_map<uint64_t, void *> vk_object_to_data;
 
 #define HKEY(obj) ((uint64_t)(obj))
 #define FIND(type, obj) (reinterpret_cast<type *>(find_object_data(HKEY(obj))))
