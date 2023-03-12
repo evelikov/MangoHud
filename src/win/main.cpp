@@ -19,12 +19,12 @@ static std::vector<kiero::RenderType::Enum> render_types;
 
 static void ConsoleSetup()
 {
-	// With this trick we'll be able to print content to the console, and if we have luck we could get information printed by the game.
-	AllocConsole();
-	SetConsoleTitle("MangoHud");
-	freopen("CONOUT$", "w", stdout);
-	freopen("CONOUT$", "w", stderr);
-	freopen("CONIN$", "r", stdin);
+    // With this trick we'll be able to print content to the console, and if we have luck we could get information printed by the game.
+    AllocConsole();
+    SetConsoleTitle("MangoHud");
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+    freopen("CONIN$", "r", stdin);
 }
 
 static void renderTypes() {
