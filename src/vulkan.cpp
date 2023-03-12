@@ -53,8 +53,6 @@
 
 using namespace std;
 
-float offset_x, offset_y, hudSpacing;
-int hudFirstRow, hudSecondRow;
 VkPhysicalDeviceDriverProperties driverProps = {};
 
 #if !defined(_WIN32)
@@ -176,8 +174,6 @@ struct swapchain_data {
 std::mutex global_lock;
 typedef std::lock_guard<std::mutex> scoped_lock;
 std::unordered_map<uint64_t, void *> vk_object_to_data;
-
-thread_local ImGuiContext* __MesaImGui;
 
 #define HKEY(obj) ((uint64_t)(obj))
 #define FIND(type, obj) (reinterpret_cast<type *>(find_object_data(HKEY(obj))))
