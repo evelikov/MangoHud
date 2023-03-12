@@ -1,8 +1,5 @@
 #include <spdlog/spdlog.h>
 #include <thread>
-#ifdef __linux__
-#include <sys/sysinfo.h>
-#endif
 #include "amdgpu.h"
 #include "gpu.h"
 #include "cpu.h"
