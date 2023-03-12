@@ -569,7 +569,7 @@ kiero::Status::Enum kiero::init(RenderType::Enum _renderType)
 
 				g_methodsTable = (uint150_t*)::calloc(size, sizeof(uint150_t));
 
-				for (int i = 0; i < size; i++)
+				for (size_t i = 0; i < size; i++)
 				{
 					g_methodsTable[i] = (uint150_t)::GetProcAddress(libOpenGL32, methodsNames[i]);
 				}
@@ -617,7 +617,7 @@ kiero::Status::Enum kiero::init(RenderType::Enum _renderType)
 
 				g_methodsTable = (uint150_t*)::calloc(size, sizeof(uint150_t));
 
-				for (int i = 0; i < size; i++)
+				for (size_t i = 0; i < size; i++)
 				{
 					g_methodsTable[i] = (uint150_t)::GetProcAddress(libVulkan, methodsNames[i]);
 				}
@@ -693,4 +693,4 @@ kiero::RenderType::Enum kiero::getRenderType()
 uint150_t* kiero::getMethodsTable()
 {
 	return g_methodsTable;
-} 
+}
