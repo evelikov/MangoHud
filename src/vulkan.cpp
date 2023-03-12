@@ -53,8 +53,6 @@
 
 using namespace std;
 
-VkPhysicalDeviceDriverProperties driverProps = {};
-
 #if !defined(_WIN32)
 namespace MangoHud { namespace GL {
    extern swapchain_stats sw_stats;
@@ -171,9 +169,11 @@ struct swapchain_data {
 };
 
 // single global lock, for simplicity
-std::mutex global_lock;
+static std::mutex global_lock;
 typedef std::lock_guard<std::mutex> scoped_lock;
-std::unordered_map<uint64_t, void *> vk_object_to_data;
+static std::unordered_map<uint64_t, void *> vk_object_to_data;
+
+static VkPhysicalDeviceDriverProperties driverProps = {};
 
 #define HKEY(obj) ((uint64_t)(obj))
 #define FIND(type, obj) (reinterpret_cast<type *>(find_object_data(HKEY(obj))))
